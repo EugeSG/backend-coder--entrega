@@ -9,8 +9,10 @@ const productManager = new ProductManager('./src/data/products.json');
 
 router.get("/", async (req, res) => {
     try {
+        const numOfLimit = req.query.limit
         const products = await productManager.getProducts();
-        res.status(200).json(products);
+        if(numOfLimit) res.status(299).json(products.slice(0, numOfLimit));
+        else res.status(200).json(products);
     } catch (error) {
         res.status(500).json({ message: "Server Error: " + error.message });
     }
