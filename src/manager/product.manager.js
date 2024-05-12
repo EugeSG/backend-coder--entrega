@@ -11,7 +11,8 @@ export default class ProductManager {
     try {
       if (fs.existsSync(this.path)) {
         const products = await fs.promises.readFile(this.path, "utf8");
-        return JSON.parse(products);
+        if(products) return JSON.parse(products)
+        else return [];
       } else return [];
     } catch (error) {
       console.log(error);
@@ -49,7 +50,6 @@ export default class ProductManager {
           return ["Error", "The field 'Code' is already existing. Please change it and try again"];
           }
       }
-      
       // Create new product
       product.id = uuidv4();
       productsFile.push(product);

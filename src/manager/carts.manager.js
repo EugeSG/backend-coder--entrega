@@ -12,7 +12,8 @@ export default class CartManager {
         try {
             if (fs.existsSync(this.path)) {
                 const carts = await fs.promises.readFile(this.path, "utf8");
-                return JSON.parse(carts);
+                if(carts) return JSON.parse(carts)
+                else return [];
             } else return [];
         } catch (error) {
             console.log(error);
@@ -25,9 +26,11 @@ export default class CartManager {
                 id: uuidv4(),
                 products: []
             }
+
             const cartsFile = await this.getCarts();
-            cartsFile.push(newCart);
-            await fs.promises.writeFile(this.path, JSON.stringify(cartsFile));
+                cartsFile.push(newCart);
+                await fs.promises.writeFile(this.path, JSON.stringify(cartsFile));
+                
             return newCart;
 
         } catch (error) {

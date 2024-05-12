@@ -9,9 +9,9 @@ const productManager = new ProductManager('./src/data/products.json');
 
 router.get("/", async (req, res) => {
     try {
-        const numOfLimit = req.query.limit
+        const { limit } = req.query;
         const products = await productManager.getProducts();
-        if(numOfLimit) res.status(299).json(products.slice(0, numOfLimit));
+        if(limit) res.status(299).json(products.slice(0, limit));
         else res.status(200).json(products);
     } catch (error) {
         res.status(500).json({ message: "Server Error: " + error.message });
@@ -64,7 +64,7 @@ router.delete("/:idProduct", async (req, res) => {
       const { idProduct } = req.params;
       const productDelete = await productManager.deleteProduct(idProduct);
       if (productDelete[0] == "Error" ) res.status(404).json({ message: productDelete[1] });
-      else res.status(200).json({ message: `User id: ${idProduct} deleted successfully` });
+      else res.status(200).json({ message: `Product with id: ${idProduct} deleted successfully` });
     } catch (error) {
       res.status(500).json({ message: "Server Error: " + error.message });
     }
