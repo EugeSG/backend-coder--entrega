@@ -1,6 +1,7 @@
 import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
 
+
 export default class ProductManager {
   constructor(path) {
     this.path = path;
@@ -40,6 +41,7 @@ export default class ProductManager {
       if (Object.values(product).includes(""))
         return ["Error", "One or more fields are empty"];
 
+      // Verify existing product
       const productsFile = await this.getProducts();
       if(productsFile.length != 0) {
         const productExist = productsFile.find(prod => prod.code == product.code);
@@ -47,6 +49,8 @@ export default class ProductManager {
           return ["Error", "The field 'Code' is already existing. Please change it and try again"];
           }
       }
+      
+      // Create new product
       product.id = uuidv4();
       productsFile.push(product);
       await fs.promises.writeFile(this.path, JSON.stringify(productsFile));
@@ -70,7 +74,6 @@ export default class ProductManager {
     } catch(error){
       console.log(error)
     }
-    //Get products
     
   }
 
@@ -81,7 +84,9 @@ export default class ProductManager {
       if (!productExist) return ["Error", "Product Not Found"];
 
       //Verify Id in body
-      if(obj.id) return ["Error", "The Id can't be modified"]
+      if(obj.id) return ["Error", "The Id can't be modified"];
+
+      // Update
       const productsFile = await this.getProducts();
       productExist = { ...productExist, ...obj };
       const newArray = productsFile.filter((u) => u.id !== id);
@@ -95,22 +100,17 @@ export default class ProductManager {
   }
 
   async deleteProduct(id) {
-    // Verify if Id Existing
-    const productExist = await this.getProducById(id);
-    if(!productExist) return ["Error", "Product Not Found"];
+    try {
+      //Validate Id
+      const productExist = await this.getProducById(id);
+      if(!productExist) return ["Error", "Product Not Found"];
 
     const products = await this.getProducts();
     const newArray = products.filter((u) => u.id !== id);
     await fs.promises.writeFile(this.path, JSON.stringify(newArray));
     return productExist;
+    } catch(error) {
+      console.log(error)
+    }
   }
-
-  // async deleteFile() {
-  //   try {
-  //     await fs.promises.unlink(this.path);
-  //     console.log("archivo eliminado");
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
 }

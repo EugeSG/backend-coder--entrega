@@ -6,6 +6,7 @@ import { upload } from "../middlewares/multer.js";
 
 const productManager = new ProductManager('./src/data/products.json');
 
+
 router.get("/", async (req, res) => {
     try {
         const products = await productManager.getProducts();
@@ -41,7 +42,7 @@ router.post("/", upload.array('thumbnails'), async (req, res) => {
             else res.status(201).json(product);
         }
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: "Server Error: " + error.message });
     }
 });
 
@@ -52,7 +53,7 @@ router.put("/:idProduct", async (req, res) => {
         if (productUpdate[0] == "Error") res.status(422).json({ message: productUpdate[1] });
         else res.status(200).json(productUpdate);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: "Server Error: " + error.message });
     }
 });
 
@@ -63,7 +64,7 @@ router.delete("/:idProduct", async (req, res) => {
       if (productDelete[0] == "Error" ) res.status(404).json({ message: productDelete[1] });
       else res.status(200).json({ message: `User id: ${idProduct} deleted successfully` });
     } catch (error) {
-      res.status(500).json({ msg: error.message });
+      res.status(500).json({ message: "Server Error: " + error.message });
     }
   });
 

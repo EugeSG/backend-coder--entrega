@@ -1,73 +1,40 @@
 import { Router } from "express";
+import CartManager from "../manager/carts.manager.js";
+
 const router = Router();
+const cartManager = new CartManager('./src/data/carts.json');
 
-// import UserManager from '../manager/user.manager.js';
-// import { upload } from "../middlewares/multer.js";
-// const userManager = new UserManager('./src/data/users.json');
+router.post("/", async (re, res) => {
+    try {
+        const cart = await cartManager.createCart();
+        res.status(201).json(cart);
+    } catch(error) {
+        res.status(500).json({message: "Server Error: " + error.message})
+    }
+})
 
-// router.get("/", async (req, res) => {
-//   try {
-//     const users = await userManager.getUsers();
-//     res.status(200).json(users);
-//   } catch (error) {
-//     res.status(500).json({ msg: error.message });
-//   }
-// });
+router.get("/:cid", async (req, res) => {
+    try {
+        const { cid } = req.params;
+        const cart = await cartManager.getCartById(cid);
+        if(cart[0] == "Error") res.status(422).json({ message: cart[1]});
+        else res.status(200).json(cart);
+    } catch(error) {
+        res.status(500).json({ message: "Server Error: " + error.message});
+    }
+})
 
-// router.post("/", async (req, res) => {
-//   try {
-//     // console.log(req.body);
-//     const user = await userManager.createUser(req.body);
-//     res.status(201).json(user);
-//   } catch (error) {
-//     res.status(500).json({ msg: error.message });
-//   }
-// });
-
-// router.post("/profile", upload.single('profile'), async (req, res) => {
-//   try {
-//     console.log(req.file);
-//     const userBody = req.body;
-//     userBody.profile = req.file.path
-//     const user = await userManager.createUser(userBody);
-//     res.status(201).json(user);
-//   } catch (error) {
-//     res.status(500).json({ msg: error.message });
-//   }
-// });
-
-// router.get("/:idUser", async (req, res) => {
-//   try {
-//     const { idUser } = req.params;
-//     const user = await userManager.getUserById(idUser);
-//     if (!user) res.status(404).json({ msg: "User not found" });
-//     else res.status(200).json(user);
-//   } catch (error) {
-//     res.status(500).json({ msg: error.message });
-//   }
-// });
-
-// router.put("/:idUser", async (req, res) => {
-//   try {
-//     const { idUser } = req.params;
-//     const userUpd = await userManager.updateUser(req.body, idUser);
-//     if (!userUpd) res.status(404).json({ msg: "Error updating user" });
-//     res.status(200).json(userUpd);
-//   } catch (error) {
-//     res.status(500).json({ msg: error.message });
-//   }
-// });
-
-// router.delete("/:idUser", async (req, res) => {
-//   try {
-//     const { idUser } = req.params;
-//     const delUser = await userManager.deleteUser(idUser);
-//     if (!delUser) res.status(404).json({ msg: "Error delete user" });
-//     else
-//       res.status(200).json({ msg: `User id: ${idUser} deleted successfully` });
-//   } catch (error) {
-//     res.status(500).json({ msg: error.message });
-//   }
-// });
-
+router.post("/:cid/product/:pid", async (req, res) => {
+    try {
+        const { cid } = req.params;
+        const { pid } = req. params;
+        const productInCart = await cartManager.addProductToCart(cid, pid);
+        if(productInCart[0] == "Error") {
+            res.status(422).json( { message: productInCart[1]});
+        }
+        else res.status(201).json(productInCart);
+    } catch(error) {
+        res.status(500).json({message: "Server Error :" + error.message})
+    }
+})
 export default router;
