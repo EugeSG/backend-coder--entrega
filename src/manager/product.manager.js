@@ -26,7 +26,6 @@ export default class ProductManager {
         "description",
         "code",
         "price",
-        "status",
         "stock",
         "category"
       ];
@@ -52,6 +51,7 @@ export default class ProductManager {
       }
       // Create new product
       product.id = uuidv4();
+      if(!product.status) product.status = true;
       productsFile.push(product);
       await fs.promises.writeFile(this.path, JSON.stringify(productsFile));
       return product;
