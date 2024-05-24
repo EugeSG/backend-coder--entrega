@@ -1,18 +1,19 @@
-{{#if products.length}}
-    {{#each products}}
-        <div>
-            <div>
-                Título: {{title}}
-            </div>
-            <div>
-                Descripción: {{description}}
-            </div>
-            <div>
-                Precio: {{price}}
-            </div>
-        </div>
-        <hr>
-    {{/each}}
-{{else}}
-    <div>Aún no hay productos</div>
-{{/if}}
+<div class="formAddProduct">
+  <h3>Agregue un producto</h3>
+
+
+  <input type="text" id="title" placeholder="Título" />
+  <input type="text" id="description" placeholder="Descripción" />
+  <input type="number" id="price" placeholder="Precio" />
+  <input type="text" id="code" placeholder="Código" />
+  <input type="number" id="stock" placeholder="Stock" />
+  <input type="text" id="category" placeholder="Categoría" />
+
+  <button id="btnSubmitNewProduct">Guardar</button>
+
+</div>
+
+  <div id="products"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="index.js"></script>

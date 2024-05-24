@@ -4,13 +4,16 @@ import { Server } from "socket.io";
 
 import cartRouter from './routes/cart.router.js';
 import productRouter from './routes/product.router.js';
-import viewsRouter from './routes/views.router.js'
+import viewsRouter from './routes/views.router.js';
+import ProductManager from "./manager/product.manager.js";
 import { __dirname } from './utils.js';
 
 const app = express();
+const productManager = new ProductManager(`${__dirname}/data/products.json`);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname + "/public"));
 
 app.engine('handlebars', handlebars.engine()); 
 app.set('view engine', 'handlebars');  
@@ -29,6 +32,15 @@ const socketServer = new Server(httpServer);
 
 socketServer.on('connection', async(socket) => {
     console.log('User connected');
+
+    socketServer.emit('getProducts', await productManager.getProducts());
+
+    socket.on('addNewProduct', async(prod) => {
+        const product = await productManager.createProduct(prod);
+        console.log(prod)
+        console.log(product)
+        socketServer.emit('getProducts', await productManager.getProducts());
+    })
 
     socket.on('disconnect', ()=>{
         console.log('User disconnected', socket.id);
