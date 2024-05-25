@@ -1,16 +1,19 @@
 <div class="formAddProduct">
   <h3>Agregue un producto</h3>
 
-
-  <input type="text" id="title" placeholder="Título" />
-  <input type="text" id="description" placeholder="Descripción" />
-  <input type="number" id="price" placeholder="Precio" />
-  <input type="text" id="code" placeholder="Código" />
-  <input type="number" id="stock" placeholder="Stock" />
-  <input type="text" id="category" placeholder="Categoría" />
-
+  <form>
+    <input type="text" id="title" placeholder="Título" />
+    <input type="text" id="description" placeholder="Descripción" />
+    <input type="number" step="any" id="price" placeholder="Precio" />
+    <input type="text" id="code" placeholder="Código" />
+    <input type="number" id="stock" placeholder="Stock" />
+    <input type="text" id="category" placeholder="Categoría" />
+    <div>
+      <button id="btnDeleteProduct" onclick="saveNewProduct()">Agregar</button>
+    </div>
+  </form>
 </div>
 
-  <div id="products"></div>
+  <div id="products" class="products"></div>
 <script src="/socket.io/socket.io.js"></script>
 <script src="index.js"></script>

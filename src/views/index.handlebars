@@ -1,18 +1,19 @@
-{{#if products.length}}
-    {{#each products}}
-        <div>
-            <div>
-                Título: {{title}}
+<div class="products">
+    {{#if products.length}}
+        {{#each products}}
+            <div class="product">
+                <div class="title">
+                    Título: {{title}}
+                </div>
+                <div>
+                    Descripción: {{description}}
+                </div>
+                <div>
+                    Precio: {{price}}
+                </div>
             </div>
-            <div>
-                Descripción: {{description}}
-            </div>
-            <div>
-                Precio: {{price}}
-            </div>
-        </div>
-        <hr>
-    {{/each}}
-{{else}}
-    <div>Aún no hay productos</div>
-{{/if}}
+        {{/each}}
+    {{else}}
+        <div>Aún no hay productos</div>
+    {{/if}}
+</div>
