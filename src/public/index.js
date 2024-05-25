@@ -17,6 +17,15 @@ socket.on('getProducts', (data) => {
                 <div>
                     Precio: ${prod.price}
                 </div>
+                <div>
+                    Código: ${prod.code}
+                </div>
+                <div>
+                    Stock: ${prod.stock}
+                </div>
+                <div>
+                    Categoría: ${prod.category}
+                </div>
             </div>
             <button id="btnDeleteProduct" onclick="deleteProduct('${prod.id}')">Eliminar</button>
         </div>`
