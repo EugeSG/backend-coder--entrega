@@ -5,9 +5,6 @@ const divProducts = document.getElementById('products');
 socket.on('getProducts', (data) => {
 
     divProducts.innerHTML = data.map((prod) => {
-        const newButton = document.createElement('button');
-        newButton.textContent = 'Click me!';    
-
         return `
         <div id=${prod.id}>
             <div>
@@ -19,9 +16,9 @@ socket.on('getProducts', (data) => {
             <div>
                 Precio: ${prod.price}
             </div>
+            <button id="btnDeleteProduct" onclick="deleteProduct('${prod.id}')">Borrar</button>
         </div>
       <hr /></p>`
-      document.body.appendChild(newButton);
     }).join(' ')
 });
 
@@ -31,12 +28,9 @@ let inputPrice = document.getElementById('price');
 let inputCode = document.getElementById('code');
 let inputStock = document.getElementById('stock');
 let inputCategory = document.getElementById('category');
-let btnFormAddProduct = document.getElementById('btnSubmitNewProduct');
-let btnDeleteProduct = document.getElementById('btnDeleteProduct');
 
 
-
-btnFormAddProduct.addEventListener('click', () => {
+const saveNewProduct = () => {
     const newProduct = {
         title: inputTitle.value,
         description: inputDescription.value,
@@ -45,11 +39,9 @@ btnFormAddProduct.addEventListener('click', () => {
         stock: inputStock.value,
         category: inputCategory.value
     }
-    deleteProduct();
     socket.emit('addNewProduct', newProduct);
+};
 
-});
-
-newButton.addEventListener('click', () => {
-  console.log('New button clicked!');
-});
+const deleteProduct = (id) => {
+    socket.emit('deleteProduct', id);
+}

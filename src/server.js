@@ -37,8 +37,11 @@ socketServer.on('connection', async(socket) => {
 
     socket.on('addNewProduct', async(prod) => {
         const product = await productManager.createProduct(prod);
-        console.log(prod)
-        console.log(product)
+        socketServer.emit('getProducts', await productManager.getProducts());
+    })
+
+    socket.on('deleteProduct', async(id) => {
+        const product = await productManager.deleteProduct(id);
         socketServer.emit('getProducts', await productManager.getProducts());
     })
 
