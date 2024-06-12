@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
-import ProductManager from "./product.manager.js";
+import ProductManager from "./product.dao.js";
 
 
-export default class CartManager {
+export default class CartDaoFS {
     constructor(path) {
         this.path = path;
     }
@@ -42,7 +42,7 @@ export default class CartManager {
         try {
             const cartsFile = await this.getCarts();
             const cart = cartsFile.find(cart => cart.id == idCart);
-            if (!cart) return ["Error", "Cart Not Found"];
+            if (!cart) return null;
             else return cart;
 
         } catch (error) {
