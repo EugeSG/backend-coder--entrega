@@ -2,16 +2,24 @@ import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
 
 
-export default class ProductManager {
+export default class ProductDaoFS {
   constructor(path) {
     this.path = path;
   }
 
-  async getProducts() {
+  async getProducts(limit) {
     try {
+      
       if (fs.existsSync(this.path)) {
-        const products = await fs.promises.readFile(this.path, "utf8");
-        if(products) return JSON.parse(products)
+        let products = await fs.promises.readFile(this.path, "utf8");
+        if(products) {
+          products = JSON.parse(products)
+          if(limit) {
+            products = products.slice(0, limit);
+            console.log(products);
+          }
+        return products;
+        }
         else return [];
       } else return [];
     } catch (error) {
@@ -33,20 +41,20 @@ export default class ProductManager {
       //Validate required fields
       const propsArray = (Object.keys(product));
       if (!expectedProps.every((i) => (propsArray.includes(i)))){
-        return ["Error", "One or more fields are missing"];
-      }
+        return {status: "error", mssg: "One or more fields are missing"};
+      };
         
 
       //Validate required values
       if (Object.values(product).includes(""))
-        return ["Error", "One or more fields are empty"];
+        return {status: "error", mssg: "One or more fields are empty"};
 
       // Verify existing product
       const productsFile = await this.getProducts();
       if(productsFile.length != 0) {
         const productExist = productsFile.find(prod => prod.code == product.code);
         if(productExist) {
-          return ["Error", "The field 'Code' is already existing. Please change it and try again"];
+          return {status: "error", mssg: "The field 'Code' is already existing. Please change it and try again"};
           }
       }
       // Create new product
@@ -54,7 +62,7 @@ export default class ProductManager {
       if(!product.status) product.status = true;
       productsFile.push(product);
       await fs.promises.writeFile(this.path, JSON.stringify(productsFile));
-      return product;
+      return {status: "success", payload: product};
 
     } catch(error) {
       console.log(error);
@@ -62,13 +70,13 @@ export default class ProductManager {
   }
 
 
-  async getProducById(idProduct) {
+  async getProductById(idProduct) {
     try {
       const productsFile = await this.getProducts();
 
       // Find id
       const product = productsFile.find(prod => prod.id == idProduct);
-      if (!product) return ["Error", "Product Not Found"];
+      if (!product) return false;
       else return product;
 
     } catch(error){
@@ -92,7 +100,7 @@ export default class ProductManager {
       const newArray = productsFile.filter((u) => u.id !== id);
       newArray.push(productExist)
       await fs.promises.writeFile(this.path, JSON.stringify(newArray));
-      return productExist;
+      return {status: "success", payload: productExist};
 
     } catch (error) {
       console.log(error);

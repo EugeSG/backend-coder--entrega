@@ -7,10 +7,10 @@ import { upload } from "../middlewares/multer.js";
 const router = Router();
 
 router.get("/", controller.getAll);
-
+router.post("/", controller.create);
 router.get("/:pid", controller.getById);
 
-// router.post("/", upload.array('thumbnails'), controller.create);
+router.post("/", upload.array('thumbnails'), controller.create);
 
 // router.put("/:idProduct", controller.update);
 

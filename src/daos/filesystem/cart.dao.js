@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
-import ProductManager from "./product.dao.js";
+import ProductDaoFS from "./product.dao.js";
 
 
 export default class CartDaoFS {
@@ -58,8 +58,8 @@ export default class CartDaoFS {
 
 
             // Validity Product
-            const productManager = new ProductManager('./src/data/products.json');
-            const product = await productManager.getProducById(idProduct);
+            const productDaoFS = new ProductDaoFS('./src/data/products.json');
+            const product = await productDaoFS.getProducById(idProduct);
             if (product[0] == "Error") return product;
 
             // Look for product in Cart

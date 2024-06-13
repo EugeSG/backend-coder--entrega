@@ -1,16 +1,19 @@
-//[{"id":1,"title":"Almendras","description":"Almendras Non Pareil","price":20000,"thumbnail":[" thum"],"code":"FSA","stock":10}
-
 import { Schema, model } from "mongoose";
-
+import mongoosePaginate from "mongoose-paginate-v2";
 const productCollectionName = "products";
 
 const productSchema = new Schema({
-  title: { type: String, required: true },
+  title: { type: String, required: true, index: true },
   description: { type: String, required: true },
+  code: { type: String, required: true },
   price: { type: Number, required: true },
   stock: { type: Number, required: true },
-  thumbnail: {type: String, required: false}
+  category : { type: String, required: true },
+  status: { type: Boolean, required: true },
+  // thumbnail: {type: String, required: false}
 }, { versionKey: false });
+
+productSchema.plugin(mongoosePaginate);
 
 export const ProductModel = model(
   productCollectionName,
