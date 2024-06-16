@@ -85,20 +85,22 @@ export default class ProductDaoFS {
     
   }
 
-  async updateProduct(obj, id) {
+  async updateProduct(id, obj) {
     try {
       // Verify if Id Exists
-      let productExist = await this.getProducById(id);
-      if (!productExist) return ["Error", "Product Not Found"];
-
+      let productExist = await this.getProductById(id);
+      if (!productExist) return false;
       //Verify Id in body
-      if(obj.id) return ["Error", "The Id can't be modified"];
+      if(obj.id) return {status: "error", mssg: "The Id can't be modified"};
 
       // Update
       const productsFile = await this.getProducts();
       productExist = { ...productExist, ...obj };
-      const newArray = productsFile.filter((u) => u.id !== id);
-      newArray.push(productExist)
+      console.log(productExist)
+      const newArray = productsFile.filter((u) => u.id != id);
+      console.log(newArray);
+      newArray.push(productExist); 
+      console.log(newArray);
       await fs.promises.writeFile(this.path, JSON.stringify(newArray));
       return {status: "success", payload: productExist};
 
@@ -109,13 +111,15 @@ export default class ProductDaoFS {
 
   async deleteProduct(id) {
     try {
+      console.log(id)
       //Validate Id
-      const productExist = await this.getProducById(id);
-      if(!productExist) return ["Error", "Product Not Found"];
+      const productExist = await this.getProductById(id);
+      if(!productExist) return false;
 
     const products = await this.getProducts();
-    const newArray = products.filter((u) => u.id !== id);
+    const newArray = products.filter((u) => u.id != id);
     await fs.promises.writeFile(this.path, JSON.stringify(newArray));
+    console.log(newArray);
     return productExist;
     } catch(error) {
       console.log(error)

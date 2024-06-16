@@ -64,14 +64,28 @@ export default class ProductDaoMongoBD {
 
   async getProductById(idProduct) {
     try {
-        const prod = await ProductModel.findById(idProduct);
-        return prod;
+        return await ProductModel.findById(idProduct);
     } catch(error) {
       console.log(error);
     }
   }
 
-  async deleteProduct() {
-    
+  async updateProduct(id, obj) {
+    try {
+      if(obj._id) return {status: "error", mssg: "The Id can't be modified"};
+      return await ProductModel.findByIdAndUpdate(id, obj, {
+        new: true,
+      });
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
+  async deleteProduct(id) {
+    try {
+      return await ProductModel.findByIdAndDelete(id);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

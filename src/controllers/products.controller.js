@@ -90,16 +90,30 @@ export const create =  async (req, res) => {
     }
 };
 
-// router.put("/:idProduct", async (req, res) => {
-//     try {
-//         const { idProduct } = req.params;
-//         const productUpdate = await productManager.updateProduct(req.body, idProduct);
-//         if (productUpdate[0] == "Error") res.status(422).json({ message: productUpdate[1] });
-//         else res.status(200).json(productUpdate);
-//     } catch (error) {
-//         res.status(500).json({ message: "Server Error: " + error.message });
-//     }
-// });
+
+export const update = async (req, res) => {
+    try {
+        const { pid } = req.params;
+        console.log(req.body);
+        const prodUpdated = await service.update(pid, req.body);
+        if(!prodUpdated) res.status(404).json({message: `Error: Product Not Found`});
+        else if(prodUpdated.status == "error") res.status(422).json({ message: `Error: ${prodUpdated.mssg}`});
+        else res.status(201).json(prodUpdated);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const remove = async (req, res) => {
+    try {
+        const { pid } = req.params;
+        const prodDeleted = await service.remove(pid);
+        if(!prodDeleted) res.status(404).json({message: `Error: Product Not Found`});
+        else res.status(201).json(prodDeleted);
+    } catch (error) {
+        
+    }
+}
 
 // router.delete("/:idProduct", async (req, res) => {
 //     try {

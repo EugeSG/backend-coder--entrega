@@ -7,13 +7,12 @@ import { upload } from "../middlewares/multer.js";
 const router = Router();
 
 router.get("/", controller.getAll);
-router.post("/", controller.create);
+// router.post("/", controller.create);
 router.get("/:pid", controller.getById);
 
 router.post("/", upload.array('thumbnails'), controller.create);
+router.put("/:pid", controller.update);
 
-// router.put("/:idProduct", controller.update);
-
-// router.delete("/:idProduct", controller.delete);
+router.delete("/:pid", controller.remove);
 
 export default router;
