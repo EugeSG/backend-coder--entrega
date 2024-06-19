@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
-import ProductManager from "./product.manager.js";
+import ProductDaoFS from "./product.dao.js";
 
 
-export default class CartManager {
+export default class CartDaoFS {
     constructor(path) {
         this.path = path;
     }
@@ -42,7 +42,7 @@ export default class CartManager {
         try {
             const cartsFile = await this.getCarts();
             const cart = cartsFile.find(cart => cart.id == idCart);
-            if (!cart) return ["Error", "Cart Not Found"];
+            if (!cart) return false;
             else return cart;
 
         } catch (error) {
@@ -52,16 +52,6 @@ export default class CartManager {
 
     async addProductToCart(idCart, idProduct) {
         try {
-            // Validity Cart
-            const cart = await this.getCartById(idCart);
-            if (cart[0] == "Error") return cart;
-
-
-            // Validity Product
-            const productManager = new ProductManager('./src/data/products.json');
-            const product = await productManager.getProducById(idProduct);
-            if (product[0] == "Error") return product;
-
             // Look for product in Cart
             let productExist = false;
             const cartsFile = await this.getCarts();
