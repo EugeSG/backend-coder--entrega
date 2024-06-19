@@ -42,7 +42,7 @@ export default class CartDaoFS {
         try {
             const cartsFile = await this.getCarts();
             const cart = cartsFile.find(cart => cart.id == idCart);
-            if (!cart) return null;
+            if (!cart) return false;
             else return cart;
 
         } catch (error) {
@@ -52,16 +52,6 @@ export default class CartDaoFS {
 
     async addProductToCart(idCart, idProduct) {
         try {
-            // Validity Cart
-            const cart = await this.getCartById(idCart);
-            if (cart[0] == "Error") return cart;
-
-
-            // Validity Product
-            const productDaoFS = new ProductDaoFS('./src/data/products.json');
-            const product = await productDaoFS.getProducById(idProduct);
-            if (product[0] == "Error") return product;
-
             // Look for product in Cart
             let productExist = false;
             const cartsFile = await this.getCarts();

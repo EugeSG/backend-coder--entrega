@@ -1,5 +1,5 @@
 import { connect } from 'mongoose';
-const connectionString = 'mongodb+srv://eugeniagonzalez97:FuriayLola0clusterCH@clustercoderh.ofv3ce9.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=clusterCoderH';
+const connectionString = process.env.MONGO_URL;
 
 export const initMongoDB = async () => {
   try {

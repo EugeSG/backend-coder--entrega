@@ -29,40 +29,12 @@ export default class ProductDaoFS {
 
   async createProduct(product) {
     try {
-      let expectedProps = [
-        "title",
-        "description",
-        "code",
-        "price",
-        "stock",
-        "category"
-      ];
-
-      //Validate required fields
-      const propsArray = (Object.keys(product));
-      if (!expectedProps.every((i) => (propsArray.includes(i)))){
-        return {status: "error", mssg: "One or more fields are missing"};
-      };
-        
-
-      //Validate required values
-      if (Object.values(product).includes(""))
-        return {status: "error", mssg: "One or more fields are empty"};
-
-      // Verify existing product
-      const productsFile = await this.getProducts();
-      if(productsFile.length != 0) {
-        const productExist = productsFile.find(prod => prod.code == product.code);
-        if(productExist) {
-          return {status: "error", mssg: "The field 'Code' is already existing. Please change it and try again"};
-          }
-      }
-      // Create new product
+    
       product.id = uuidv4();
-      if(!product.status) product.status = true;
+
       productsFile.push(product);
       await fs.promises.writeFile(this.path, JSON.stringify(productsFile));
-      return {status: "success", payload: product};
+      return product;
 
     } catch(error) {
       console.log(error);

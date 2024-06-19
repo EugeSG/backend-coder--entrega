@@ -5,7 +5,7 @@ const createURLWithQuerys = (page, limit, sort, title) => {
         let url = `http://localhost:8080/api/products?page=${page}`;
 
         if(limit) url += `&limit=${limit}`
-        else url =  `&limit=10`;
+        else url +=  `&limit=10`;
         if(sort) url += `&sort=${sort}`;
         if(title) url += `&title=${title}`;
 
@@ -57,7 +57,7 @@ export const getById =  async (req, res) => {
     try {
         const { pid } = req.params;
         const product = await service.getById(pid);
-        if (!product) res.status(404).json({ message: "Product Not Found" });
+        if (!product) res.status(404).json({ message: "Error: Product Not Found" });
         else res.status(200).json(product);
     } catch (error) {
         res.status(500).json({ message: "Error: " + error.message });
@@ -71,14 +71,12 @@ export const create =  async (req, res) => {
         const productBody = req.body;
 
         let thumbnails = [];
-        if(req.file){
+        if(req.files){
             for (const file of req.files) {
                 thumbnails.push(file.path);
             }
             productBody.thumbnails = thumbnails;
         }
-        
-
         // create y manejo de errores. 
         const product = await service.create(productBody);
 
@@ -94,7 +92,7 @@ export const create =  async (req, res) => {
 export const update = async (req, res) => {
     try {
         const { pid } = req.params;
-        console.log(req.body);
+
         const prodUpdated = await service.update(pid, req.body);
         if(!prodUpdated) res.status(404).json({message: `Error: Product Not Found`});
         else if(prodUpdated.status == "error") res.status(422).json({ message: `Error: ${prodUpdated.mssg}`});
@@ -114,14 +112,3 @@ export const remove = async (req, res) => {
         
     }
 }
-
-// router.delete("/:idProduct", async (req, res) => {
-//     try {
-//         const { idProduct } = req.params;
-//         const productDelete = await productManager.deleteProduct(idProduct);
-//         if (productDelete[0] == "Error") res.status(404).json({ message: productDelete[1] });
-//         else res.status(200).json({ message: "Product with id: ${idProduct} deleted successfully" });
-//     } catch (error) {
-//         res.status(500).json({ message: "Server Error: " + error.message });
-//     }
-// });

@@ -8,8 +8,7 @@ export default class ProductDaoMongoBD {
 
       let sortOrder = {};
       if (sort)
-        sortOrder.price = sort === "asc" ? 1 : sort === "desc" ? -1 : null;
-
+        sortOrder.price = sort === "asc" ? 1 : sort === "desc" ? -1 : null; 
       return await ProductModel.paginate(filterTitle, {
         page: page,
         limit:limit,
@@ -22,41 +21,7 @@ export default class ProductDaoMongoBD {
 
   async createProduct(product) {
     try {
-      let expectedProps = [
-        "title",
-        "description",
-        "code",
-        "price",
-        "stock",
-        "category",
-      ];
-
-      //Validate required fields
-      const propsArray = Object.keys(product);
-
-      if (!expectedProps.every((i) => propsArray.includes(i))) {
-        return {status: "error", mssg: "One or more fields are missing"};
-      }
-        
-
-      //Validate required values
-      if (Object.values(product).includes(""))
-        return {status: "error", mssg: "One or more fields are empty"};
-
-      // Verify existing product
-      let productExist = await this.getProducts();
-      if(productExist.length != 0) {
-        productExist = productExist.docs.find(prod => prod.code == product.code);
-        if(productExist) {
-          return {status: "error", mssg: "The field 'Code' is already existing. Please change it and try again"}
-          }
-      }
-
-      // Create new product
-      if(!product.status) product.status = true;
-      const response =  await ProductModel.create(product);
-      return {status: "success", payload: response}
-
+      return await ProductModel.create(product);
     } catch(error) {
         console.log(error);
     }

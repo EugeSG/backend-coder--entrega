@@ -1,6 +1,6 @@
 import express from "express";
 import handlebars from 'express-handlebars';
-import { Server } from "socket.io";
+import dotEnv from 'dotenv/config';
 
 import cartRouter from './routes/cart.router.js';
 import productRouter from './routes/product.router.js';
@@ -31,7 +31,7 @@ app.use('/api/carts', cartRouter);
 app.use('/', viewsRouter);
 
 // Mongo persistencia -- usar .env para dinamizar las persistencias
-const PERSISTENCE = 'mongo';
+const PERSISTENCE = process.env.PERSISTENCE;
 if(PERSISTENCE === 'mongo') initMongoDB();
 
 

@@ -1,9 +1,17 @@
+
 import ProductDaoMongoBD from "../daos/mongodb/product.dao.js";
-const productDao = new ProductDaoMongoBD();
+import { __dirname } from '../utils.js';
+import ProductDaoFS from "../daos/filesystem/product.dao.js";
+
+const PERSISTENCE = process.env.PERSISTENCE;
+let productDao;
+
+if(PERSISTENCE === 'mongo')productDao = new ProductDaoMongoBD();
+else productDao = new ProductDaoFS(`${__dirname}/data/products.json`);
 
 // import { __dirname } from '../utils.js';
 // import ProductDaoFS from "../daos/filesystem/product.dao.js";
-// const productDao = new ProductDaoFS(`${__dirname}/data/products.json`);
+// const 
 
 export const getAll = async (limit, page, sort, title) => {
   try {
@@ -15,9 +23,48 @@ export const getAll = async (limit, page, sort, title) => {
 
 export const create = async (product) => {
   try {
+    let expectedProps = [
+      "title",
+      "description",
+      "code",
+      "price",
+      "stock",
+      "category",
+    ];
+
+    //Validate required fields
+    const propsArray = Object.keys(product);
+
+    if (!expectedProps.every((i) => propsArray.includes(i))) {
+      return { status: "error", mssg: "One or more fields are missing" };
+    }
+
+    //Validate required values
+    if (Object.values(product).includes(""))
+      return { status: "error", mssg: "One or more fields are empty" };
+
+    // Verify existing product
+    let productExist = await productDao.getProducts();
+    if (productExist.length != 0) {
+      productExist = productExist.docs.find(
+        (prod) => prod.code == product.code
+      );
+      if (productExist) {
+        return {
+          status: "error",
+          mssg: "The field 'Code' is already existing. Please change it and try again",
+        };
+      }
+    }
+
+    // Add status
+    if (!product.status) product.status = true;
     const newProd = await productDao.createProduct(product);
-    if (!newProd) return false;
-    else return newProd;
+
+    if (!newProd)
+      return { status: "error", mssg: "Something was wrong. Try again" };
+    else return { status: "success", payload: newProd };
+
   } catch (error) {
     console.log(error);
   }
