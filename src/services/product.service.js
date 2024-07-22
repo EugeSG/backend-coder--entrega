@@ -1,6 +1,6 @@
 
 import ProductDaoMongoBD from "../daos/mongodb/product.dao.js";
-import { __dirname } from '../utils.js';
+import { __dirname } from '../utils/dirnameFunctions.js';
 import ProductDaoFS from "../daos/filesystem/product.dao.js";
 
 const PERSISTENCE = process.env.PERSISTENCE;
