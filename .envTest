@@ -1,0 +1,4 @@
+PERSISTENCE = "mongo"
+MONGO_URL= 
+URL = 
+JWT_SECRET

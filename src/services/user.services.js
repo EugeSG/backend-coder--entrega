@@ -36,3 +36,17 @@ export const createUser = async (product) => {
   }
 }
 
+export const addCart = async (userId, cartId) => {
+  try {
+    const cartUpdate = await userModel.findByIdAndUpdate(
+      { _id: userId },
+      {$set: {cartId: cartId}},
+      {new: true}
+    )
+    return cartUpdate;
+  } catch(error) {
+    console.log("Service Error Add Cart " + error.message);
+    
+  }
+}
+

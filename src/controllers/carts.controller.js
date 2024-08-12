@@ -1,4 +1,5 @@
 import * as service from "../services/cart.services.js";
+import { addCart } from "../services/user.services.js";
 
 export const getAll = async (req, res) => {
   try {
@@ -22,9 +23,14 @@ export const getById = async (req, res) => {
 
 export const create = async (req, res) => {
   try {
+    const userId = req.user[0]._id
     const newProd = await service.create(req.body);
     if(!newProd) res.status(400).json({msg: 'Error create cart'});
-    else res.json([newProd]);
+    else {
+      const addCartInUser = await addCart(userId, newProd._id)
+      if(!addCartInUser) res.status(400).json("Se creó el carrito pero no se pudo asignar al usuario");
+      else res.json([newProd])
+    };
   } catch (error) {
     console.log(error);
   }
