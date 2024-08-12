@@ -36,13 +36,17 @@ export default class CartDaoMondoDB {
 
     async existProdInCart(idCart, idProduct){
         try {
+          
           const cart = await CartModel.findOne({
             _id: idCart,
             products: { $elemMatch: { product: idProduct } }
           });
 
-          const product = cart ? cart.products?.find(prod => prod.product == idProduct) : null;
-
+          let product = null;
+          if(cart){
+            product = cart.products?.filter(prod => prod.product._id == idProduct)
+          }
+          
           return product;
         } catch (error) {
           throw new Error(error);
@@ -55,13 +59,18 @@ export default class CartDaoMondoDB {
             let obj = {
                 product: idProduct,
             };
+
             // Exist prod in cart?
             const existProdInCart = await this.existProdInCart(idCart, idProduct);
             let response;
+            
+            
+
             if(existProdInCart){
+
                 response = await CartModel.findOneAndUpdate(
                   { _id: idCart, 'products.product': idProduct },
-                  { $set: { 'products.$.quantity': existProdInCart.quantity + 1 } },
+                  { $set: { 'products.$.quantity': existProdInCart[0].quantity + 1 } },
                   { new: true }
                 );
               } else {
@@ -75,12 +84,13 @@ export default class CartDaoMondoDB {
               return response;
 
         } catch (error) {
-            console.log(error);
+            console.log("dao error ", error);
         }
     }
 
     async deleteProdToCart(idCart, idProduct) {
         try {
+          
           return await CartModel.findByIdAndUpdate(
             { _id: idCart },
             { $pull: { products: { product: idProduct } } },

@@ -19,5 +19,7 @@ router.put("/:cid", passport.authenticate("current", { session: false }), author
 
 router.put("/:cid/products/:pid", passport.authenticate("current", { session: false }), authorization(["user", "admin"], true), controller.updateQuantity);
 
-router.delete("/:cid", controller.clear)
+router.delete("/:cid", controller.clear);
+
+router.post("/:cid/purchase", passport.authenticate("current", { session: false }), authorization(["user", "admin"], true), controller.finishPurchase)
 export default router;

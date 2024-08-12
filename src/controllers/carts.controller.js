@@ -1,5 +1,8 @@
 import * as service from "../services/cart.services.js";
+import { create as createTicket } from "../services/ticket.service.js";
+import { update as updateProd } from "../services/product.service.js";
 import { addCart } from "../services/user.services.js";
+
 
 export const getAll = async (req, res) => {
   try {
@@ -106,6 +109,65 @@ export const clear = async (req, res) => {
     if(cartClear.status == "error") res.json({ message: `Error: ${cartClear.mssg}` });
     else res.status(201).json(cartClear.payload);
   } catch (error) {
+    console.log(error);
+  }
+}
+
+export const finishPurchase = async (req, res) => {
+  try {
+    
+    const { cid } = req.params;
+    const cart = await service.getById(cid);
+    
+    if(!cart){
+      return res.status(404).json({ message: "Cart Not Found"});
+    }
+
+    const productsInPurchase = [];
+    const productsWithoutStock = [];
+    const productsWithErrors = [];
+    let ticket = 'No se pudo realizar la compra';
+
+    try {
+    cart.products.forEach(async (product) => {
+      
+      if (product.product.stock < product.quantity) productsWithoutStock.push(product.product._id);
+      else {
+          productsInPurchase.push(product);
+          
+          await service.deleteProdToCart(cart._id, product.product._id );
+ 
+          let productStock = {
+            stock: product.product.stock - product.quantity
+          };
+          await updateProd(product.product._id, productStock);  
+      }
+    });
+
+    if(productsInPurchase.length !== 0) {
+      
+      const amount = productsInPurchase.reduce((acc, curr) => acc + curr.quantity * curr.product.price, 0)
+      ticket = await createTicket(amount, req.user[0]._id);
+
+      if(!ticket){ 
+        console.log("HUBO UN ERROR");
+      }
+    }
+
+
+    res.status(200).json({
+      message: "Compra finalizada",
+      ticket,
+      productsWithErrors,
+      productsWithoutStock
+    });
+  } catch(error) {
+    console.log(error);  
+  } 
+
+    
+
+  } catch(error) {
     console.log(error);
   }
 }
