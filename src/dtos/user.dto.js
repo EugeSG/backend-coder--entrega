@@ -9,3 +9,9 @@ export const userDto = Joi.object({
   cartId: Joi.string(),
   role: Joi.string()
 });
+
+export const userPrvacyDto = Joi.object({
+  first_name: Joi.string(),
+  last_name: Joi.string(),
+  email: Joi.string().email()
+});

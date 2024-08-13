@@ -4,6 +4,8 @@ import passport from "passport";
 import { validate } from "../middlewares/validation.middleware.js";
 import { userDto } from "../dtos/user.dto.js"
 import { authDto } from "../dtos/auth.dto.js"
+import { userPrvacyDto } from "../dtos/user.dto.js";
+import { validateSensibleDataFromUser } from "../middlewares/validation.middleware.js";
 const router = Router();
 
 router.post(
@@ -22,6 +24,7 @@ router.get(
   "/current",
   passport.authenticate("current",
   { session: false }),
+  validateSensibleDataFromUser(userPrvacyDto),
   (req, res) => {
     res.status(200).json({
       message: "Bienvenido",
