@@ -124,15 +124,16 @@ export const finishPurchase = async (req, res) => {
     }
 
     const productsInPurchase = [];
-    const productsWithoutStock = [];
-    const productsWithErrors = [];
+    let productsWithoutStock = '';
     let ticket = 'No se pudo realizar la compra';
 
     try {
     cart.products.forEach(async (product) => {
       
-      if (product.product.stock < product.quantity) productsWithoutStock.push(product.product._id);
-      else {
+      if (product.product.stock < product.quantity) {
+          productsWithoutStock += product.product._id + ', ';
+          return 
+      } else {
           productsInPurchase.push(product);
           
           await service.deleteProdToCart(cart._id, product.product._id );
@@ -144,7 +145,9 @@ export const finishPurchase = async (req, res) => {
       }
     });
 
-    if(productsInPurchase.length !== 0) {
+    if(productsWithoutStock.length !== 0) {
+      res.status(400).json({ status: "Error", message: ` Los siguientes productos no tienen stock suficiente: ${productsWithoutStock}` });
+    } else if(productsInPurchase.length !== 0) {
       
       const amount = productsInPurchase.reduce((acc, curr) => acc + curr.quantity * curr.product.price, 0)
       ticket = await createTicket(amount, req.user[0]._id);
@@ -152,14 +155,14 @@ export const finishPurchase = async (req, res) => {
       if(!ticket){ 
         return res.status(400).json({ status: "Error", message: "Hubo un error al crear el ticket" });
       }
+
+      res.status(200).json({
+        message: "Compra finalizada",
+        ticket
+      });
     }
 
-    res.status(200).json({
-      message: "Compra finalizada",
-      ticket,
-      productsWithErrors,
-      productsWithoutStock
-    });
+
 
     } catch(error) {
       res.status(500).json({ status: "Error", message: error.message }); 
