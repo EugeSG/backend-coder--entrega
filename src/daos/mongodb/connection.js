@@ -1,5 +1,5 @@
 import { connect } from 'mongoose';
-import { config } from '../../config/config';
+import { config } from '../../config/config.js';
 const connectionString = config.MONGO_URL;
 
 export const initMongoDB = async () => {

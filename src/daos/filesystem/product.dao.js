@@ -7,7 +7,7 @@ export default class ProductDaoFS {
     this.path = path;
   }
 
-  async getProducts(limit) {
+  async getProducts(method, limit) {
     try {
       
       if (fs.existsSync(this.path)) {
@@ -44,7 +44,7 @@ export default class ProductDaoFS {
 
   async getProductById(idProduct) {
     try {
-      const productsFile = await this.getProducts();
+      const productsFile = await this.getProducts("fileSystem");
 
       // Find id
       const product = productsFile.find(prod => prod.id == idProduct);
@@ -66,7 +66,7 @@ export default class ProductDaoFS {
       if(obj.id) return {status: "error", mssg: "The Id can't be modified"};
 
       // Update
-      const productsFile = await this.getProducts();
+      const productsFile = await this.getProducts("fileSystem");
       productExist = { ...productExist, ...obj };
       console.log(productExist)
       const newArray = productsFile.filter((u) => u.id != id);
@@ -88,7 +88,7 @@ export default class ProductDaoFS {
       const productExist = await this.getProductById(id);
       if(!productExist) return false;
 
-    const products = await this.getProducts();
+    const products = await this.getProducts("fileSystem");
     const newArray = products.filter((u) => u.id != id);
     await fs.promises.writeFile(this.path, JSON.stringify(newArray));
     console.log(newArray);

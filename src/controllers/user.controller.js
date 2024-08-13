@@ -1,9 +1,6 @@
-import { compare } from "bcrypt";
 import * as service from "../services/user.services.js";
 import { createHash } from "../utils/hashFunctions.js";
-import { comparePassword } from "../utils/hashFunctions.js";
 import { generateToken } from "../utils/jwtFunctions.js";
-import jwt from "jsonwebtoken";
 
 export const login = async (req, res) => {
   const payload = {
@@ -28,11 +25,6 @@ export const login = async (req, res) => {
 export const register = async (req, res) => {
   const { first_name, last_name, email, role, password } = req.body;
 
-  if (!first_name || !last_name || !email || !password) {
-    return res.status(400).json({
-      error: "Falta información",
-    });
-  }
   try {
     const hashPassword = await createHash(password);
     const user = await service.createUser({

@@ -2,7 +2,7 @@
 import ProductDaoMongoBD from "../daos/mongodb/product.dao.js";
 import { __dirname } from '../utils/dirnameFunctions.js';
 import ProductDaoFS from "../daos/filesystem/product.dao.js";
-import config from "../config/config.js";
+import { config } from "../config/config.js";
 // import { __dirname } from '../utils.js';
 // import ProductDaoFS from "../daos/filesystem/product.dao.js"; 
 
@@ -13,42 +13,34 @@ else productDao = new ProductDaoFS(`${__dirname}/data/products.json`);
 
 
 
-export const getAll = async (limit, page, sort, title) => {
+export const getAll = async (method,limit, page, sort, title) => {
   try {
-    return await productDao.getProducts(limit, page, sort, title);
+    return await productDao.getProducts(method, limit, page, sort, title);
   } catch (error) {
     console.log(error);
   }
 };
 
-export const create = async (product) => {
+
+export const create = async (product, method) => {
   try {
-    let expectedProps = [
-      "title",
-      "description",
-      "code",
-      "price",
-      "stock",
-      "category",
-    ];
-
-    //Validate required fields
-    const propsArray = Object.keys(product);
-
-    if (!expectedProps.every((i) => propsArray.includes(i))) {
-      return { status: "error", mssg: "One or more fields are missing" };
-    }
-
-    //Validate required values
-    if (Object.values(product).includes(""))
-      return { status: "error", mssg: "One or more fields are empty" };
 
     // Verify existing product
-    let productExist = await productDao.getProducts();
+    let productExist = await productDao.getProducts(method);
+    
     if (productExist.length != 0) {
-      productExist = productExist.docs.find(
-        (prod) => prod.code == product.code
-      );
+
+      if(productExist.docs){
+        productExist = productExist.docs.find(
+          (prod) => prod.code == product.code
+        );  
+
+      }else{
+        productExist = productExist.find(
+          (prod) => prod.code == product.code
+        );
+      }
+      
       if (productExist) {
         return {
           status: "error",

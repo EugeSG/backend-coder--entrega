@@ -14,9 +14,10 @@ const createURLWithQuerys = (page, limit, sort, title) => {
 
 export const getAll =  async (req, res) => {
     try {
+        const method = req.method;
         const { page, limit, sort, title } = req.query;
 
-        const response = await service.getAll(limit, page, sort, title);
+        const response = await service.getAll(method, limit, page, sort, title);
 
         const nextLink = response.hasNextPage ? createURLWithQuerys(response.nextPage, limit, sort, title ) : null;
         const prevLink = response.hasPrevPage ? createURLWithQuerys(response.prevPage, limit, sort, title ) : null;
@@ -66,7 +67,7 @@ export const getById =  async (req, res) => {
 
 export const create =  async (req, res) => {
     try {
-
+        
         //Añadir archivos si tiene
         const productBody = req.body;
 
@@ -78,7 +79,7 @@ export const create =  async (req, res) => {
             productBody.thumbnails = thumbnails;
         }
         // create y manejo de errores. 
-        const product = await service.create(productBody);
+        const product = await service.create(productBody, req.method);
 
         if (product.status == "error") res.status(422).json({ message: `Error: ${product.mssg}` });
         else res.status(201).json(product.payload);

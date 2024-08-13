@@ -2,8 +2,13 @@ import { ProductModel } from "./models/product.model.js";
 
 export default class ProductDaoMongoBD {
   // CHEQUEAR QUE EL PAGINATION DEVUELVA [] SI NO HAY PRODUCTOS.
-  async getProducts(limit = 10, page = 1, sort, title) {
+  async getProducts(method, limit = 10, page = 1, sort, title,) {
     try {
+      
+      if(method == "POST") {
+        return await ProductModel.find();
+      }
+      
       const filterTitle = title ? { title: title } : {};
 
       let sortOrder = {};

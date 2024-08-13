@@ -1,11 +1,14 @@
 import { Router } from "express";
 import * as controller from "../controllers/user.controller.js";
 import passport from "passport";
-
+import { validate } from "../middlewares/validation.middleware.js";
+import { userDto } from "../dtos/user.dto.js"
+import { authDto } from "../dtos/auth.dto.js"
 const router = Router();
 
 router.post(
   "/login",
+  validate(authDto),
   passport.authenticate("login", {
     session: false,
     failurlRedirect: "/api/sessions/login",
@@ -13,7 +16,7 @@ router.post(
   controller.login
 );
 
-router.post("/register", controller.register);
+router.post("/register", validate(userDto), controller.register);
 
 router.get(
   "/current",

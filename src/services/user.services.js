@@ -21,12 +21,24 @@ export const getUserByEmail = async (emailUser) => {
   try {
     return await userModel.findOne({email: emailUser.email});
   } catch(error) {
-    console.log("Erro get User By Email" + error.message);
+    console.log("Error get User By Email" + error.message);
   };
 };
 
 export const createUser = async (product) => {
   try {
+
+    // Check if the email already exists
+    let productWithSameEmail = await userModel.find({ email: product.email });
+    console.log(productWithSameEmail);
+    
+    if(productWithSameEmail.length != 0) {
+      return {
+        status: "error",
+        mssg: "The email already exists"
+      }
+    };
+
     return await userModel.create(product);
   } catch(error) {
       console.log("Error Create User " + error.message);

@@ -3,6 +3,8 @@ import * as controller from "../controllers/products.controller.js"
 import { authorization } from "../middlewares/authorization.middleware.js";
 import passport from "passport";
 import { upload } from "../middlewares/multer.middleware.js";
+import { productDto } from "../dtos/product.dto.js";
+import { validate } from "../middlewares/validation.middleware.js"
 
 const router = Router();
 
@@ -13,6 +15,7 @@ router.get("/:pid", controller.getById);
 router.post("/", passport.authenticate("current",
     { session: false }),
     authorization(["admin"]), 
+    validate(productDto),
     upload.array('thumbnails'), 
     controller.create
 );
