@@ -1,5 +1,6 @@
 import { connect } from 'mongoose';
-const connectionString = process.env.MONGO_URL;
+import { config } from '../../config/config';
+const connectionString = config.MONGO_URL;
 
 export const initMongoDB = async () => {
   try {

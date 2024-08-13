@@ -1,10 +1,9 @@
 import express from "express";
 import handlebars from 'express-handlebars';
-import dotEnv from 'dotenv/config';
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import { initializePassport } from "./config/passport.config.js";
-import jwt from "jsonwebtoken";
+import { config } from "./config/config.js";
 
 import cartRouter from './routes/cart.router.js';
 import productRouter from './routes/product.router.js';
@@ -42,11 +41,10 @@ app.use('/api/users', userRouter);
 app.use('/', viewsRouter);
 
 // Mongo persistencia -- usar .env para dinamizar las persistencias
-const PERSISTENCE = process.env.PERSISTENCE;
-if(PERSISTENCE === 'mongo') initMongoDB();
+if(config.PERSISTENCE === 'mongo') initMongoDB();
 
 
-const PORT = 8080;
+const PORT = config.PORT || 8080;
 app.listen(PORT, () => console.log(`Server ok on port ${PORT}`));
 
 

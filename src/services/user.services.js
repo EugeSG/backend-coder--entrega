@@ -1,15 +1,12 @@
 import { __dirname } from '../utils/dirnameFunctions.js';
 import ProductDaoFS from "../daos/filesystem/product.dao.js";
-
+import { config } from '../config/config.js';
 import { userModel } from '../daos/mongodb/models/user.model.js'
 import ProductDaoMongoBD from "../daos/mongodb/product.dao.js";
 
-const PERSISTENCE = process.env.PERSISTENCE;
 let productDao;
-
-if(PERSISTENCE === 'mongo') productDao = new ProductDaoMongoBD();
+if(config.PERSISTENCE === 'mongo') productDao = new ProductDaoMongoBD();
 else productDao = new ProductDaoFS(`${__dirname}/data/products.json`);
-
 
 export const getUserById = async (id) => {
     try {

@@ -2,16 +2,16 @@
 import ProductDaoMongoBD from "../daos/mongodb/product.dao.js";
 import { __dirname } from '../utils/dirnameFunctions.js';
 import ProductDaoFS from "../daos/filesystem/product.dao.js";
+import config from "../config/config.js";
+// import { __dirname } from '../utils.js';
+// import ProductDaoFS from "../daos/filesystem/product.dao.js"; 
 
-const PERSISTENCE = process.env.PERSISTENCE;
+
 let productDao;
-
-if(PERSISTENCE === 'mongo')productDao = new ProductDaoMongoBD();
+if(config.PERSISTENCE === 'mongo')productDao = new ProductDaoMongoBD();
 else productDao = new ProductDaoFS(`${__dirname}/data/products.json`);
 
-// import { __dirname } from '../utils.js';
-// import ProductDaoFS from "../daos/filesystem/product.dao.js";
-// const 
+
 
 export const getAll = async (limit, page, sort, title) => {
   try {
