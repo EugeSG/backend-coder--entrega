@@ -8,7 +8,6 @@ const createURLWithQuerys = (page, limit, sort, title) => {
         else url +=  `&limit=10`;
         if(sort) url += `&sort=${sort}`;
         if(title) url += `&title=${title}`;
-
         return url;
 }
 
@@ -16,9 +15,7 @@ export const getAll =  async (req, res) => {
     try {
         const method = req.method;
         const { page, limit, sort, title } = req.query;
-
         const response = await service.getAll(method, limit, page, sort, title);
-
         const nextLink = response.hasNextPage ? createURLWithQuerys(response.nextPage, limit, sort, title ) : null;
         const prevLink = response.hasPrevPage ? createURLWithQuerys(response.prevPage, limit, sort, title ) : null;
         
@@ -50,7 +47,7 @@ export const getAll =  async (req, res) => {
                 })
         }
     } catch (error) {
-        res.status(500).json({ message: "Error: " + error.message });
+        res.status(500).json({ status: "Error", message: error.message });
     }
 };
 
@@ -58,10 +55,10 @@ export const getById =  async (req, res) => {
     try {
         const { pid } = req.params;
         const product = await service.getById(pid);
-        if (!product) res.status(404).json({ message: "Error: Product Not Found" });
+        if (!product) res.status(404).json({ status: "Error", message: "Product Not Found" });
         else res.status(200).json(product);
     } catch (error) {
-        res.status(500).json({ message: "Error: " + error.message });
+        res.status(500).json({ status: "Error", message: error.message });
     }
 };
 
@@ -78,14 +75,15 @@ export const create =  async (req, res) => {
             }
             productBody.thumbnails = thumbnails;
         }
+
         // create y manejo de errores. 
         const product = await service.create(productBody, req.method);
 
-        if (product.status == "error") res.status(422).json({ message: `Error: ${product.mssg}` });
+        if (product.status == "error") res.status(422).json({ status: "Error", message: product.mssg });
         else res.status(201).json(product.payload);
 
     } catch (error) {
-        res.status(500).json({ message: "Error: " + error.message });
+        res.status(500).json({ status: "Error", message: error.message });
     }
 };
 

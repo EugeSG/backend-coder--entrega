@@ -2,8 +2,6 @@ import express from "express";
 import handlebars from 'express-handlebars';
 import passport from "passport";
 import cookieParser from "cookie-parser";
-import { initializePassport } from "./config/passport.config.js";
-import { config } from "./config/config.js";
 
 import cartRouter from './routes/cart.router.js';
 import productRouter from './routes/product.router.js';
@@ -13,6 +11,8 @@ import userRouter from './routes/user.router.js';
 
 import { __dirname } from './utils/dirnameFunctions.js';
 import { initMongoDB } from "./daos/mongodb/connection.js";
+import { initializePassport } from "./config/passport.config.js";
+import { config } from "./config/config.js";
 
 // Configurar Express
 const app = express();

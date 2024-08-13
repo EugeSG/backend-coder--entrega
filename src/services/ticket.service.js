@@ -1,17 +1,16 @@
 
-import { ticketModel } from "../daos/mongodb/models/ticket.model.js";
-import { v4 as uuid } from "uuid";
+import TicketDaoMongoDB from "../daos/mongodb/ticket.dao.js";
 
+const ticketDao = new TicketDaoMongoDB();
 export const create = async(amount, purchaser) => {
+
     try {
-        return await ticketModel.create({
-            code: uuid(),
-            purchase_datetime: new Date(),
-            amount,
-            purchaser
-          });
+        const ticket = await ticketDao.create(amount, purchaser);
+        if(!ticket) return false;
+        return ticket;
+
     } catch(error) {
-        console.log(error);
+        console.log("Error in create ticket.service.js: ", error.message);
         
     }
    

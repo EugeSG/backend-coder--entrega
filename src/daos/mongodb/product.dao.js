@@ -3,24 +3,17 @@ import { ProductModel } from "./models/product.model.js";
 export default class ProductDaoMongoBD {
   // CHEQUEAR QUE EL PAGINATION DEVUELVA [] SI NO HAY PRODUCTOS.
   async getProducts(method, limit = 10, page = 1, sort, title,) {
-    try {
+    try { 
+      if(method == "POST") return await ProductModel.find();
       
-      if(method == "POST") {
-        return await ProductModel.find();
-      }
-      
-      const filterTitle = title ? { title: title } : {};
-
-      let sortOrder = {};
-      if (sort)
-        sortOrder.price = sort === "asc" ? 1 : sort === "desc" ? -1 : null; 
-      return await ProductModel.paginate(filterTitle, {
-        page: page,
-        limit:limit,
-        sort: sortOrder,
+      return await ProductModel.paginate(title, {
+        page,
+        limit,
+        sort,
       });
-    } catch {
-      console.log(error);
+
+    } catch(error) {
+      console.log("Error in getProducts product.dao.js: ", error.message);      
     }
   }
 
@@ -28,7 +21,7 @@ export default class ProductDaoMongoBD {
     try {
       return await ProductModel.create(product);
     } catch(error) {
-        console.log(error);
+      console.log("Error in createProduct product.dao.js: ", error.message);
     }
   }
 
@@ -36,7 +29,8 @@ export default class ProductDaoMongoBD {
     try {
         return await ProductModel.findById(idProduct);
     } catch(error) {
-      console.log(error);
+      console.log("Error in getProductById product.dao.js: ", error.message);
+      
     }
   }
 
@@ -47,7 +41,8 @@ export default class ProductDaoMongoBD {
         new: true,
       });
     } catch(error) {
-      console.log(error);
+      console.log("Error in updateProduct product.dao.js: ", error.message);
+      
     }
   }
 
@@ -55,7 +50,7 @@ export default class ProductDaoMongoBD {
     try {
       return await ProductModel.findByIdAndDelete(id);
     } catch (error) {
-      console.log(error);
+      console.log("Error in deleteProduct product.dao.js: ", error.message);
     }
   }
 }

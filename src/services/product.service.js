@@ -15,9 +15,20 @@ else productDao = new ProductDaoFS(`${__dirname}/data/products.json`);
 
 export const getAll = async (method,limit, page, sort, title) => {
   try {
-    return await productDao.getProducts(method, limit, page, sort, title);
+
+    const filterTitle = title ? { title: title } : {};
+
+    let sortOrder = {};
+    if (sort)
+      sortOrder.price = sort === "asc" ? 1 : sort === "desc" ? -1 : null; 
+
+    const products = await productDao.getProducts(method, limit, page, sortOrder, filterTitle);
+    
+    if(!products) return false
+    return products;
+
   } catch (error) {
-    console.log(error);
+    console.log("Error in getAll product.service.js: ", error.message);
   }
 };
 
@@ -58,7 +69,7 @@ export const create = async (product, method) => {
     else return { status: "success", payload: newProd };
 
   } catch (error) {
-    console.log(error);
+    console.log("Error in create product.service.js: ", error.message);
   }
 };
 
@@ -75,7 +86,9 @@ export const update = async (idProduct, product) => {
     const prodUpdated = await productDao.updateProduct(idProduct, product);
     if (!prodUpdated) return false;
     else return prodUpdated;
-  } catch (error) {}
+  } catch (error) {
+    console.log("Error in getById product.service.js: ", error.message);
+  }
 };
 
 export const remove = async (idProduct) => {
@@ -84,6 +97,6 @@ export const remove = async (idProduct) => {
     if (!prodDeleted) return false;
     else return prodDeleted;
   } catch (error) {
-    console.log(error);
+    console.log("Error in getById product.service.js: ", error.message);
   }
 };

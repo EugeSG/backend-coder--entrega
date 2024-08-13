@@ -10,9 +10,11 @@ const productDao = new ProductDaoMongoBD();
 
 export const getAll = async () => {
   try {
-    return await cartDao.getCarts();
+    let carts = await cartDao.getCarts();
+    if(!carts) return false;
+    return carts;
   } catch (error) {
-    console.log(error);
+    console.log("Error in getAll cart.services.js: ", error.message);
   }
 };
 
@@ -22,15 +24,17 @@ export const getById = async (idCart) => {
     if(!cart) return false
     else return cart;
   } catch (error) {
-    throw new Error(error);
+    console.log("Error using getById cart.services.js: ", error.message);
   }
 };
 
 export const create = async (obj) => {
   try {
-    return await cartDao.createCart(obj);
+    const cart =  await cartDao.createCart(obj);
+    if(!cart) return false
+    else return cart;
   } catch (error) {
-    throw new Error(error);
+    console.log("Error in create cart.services.js: ", error.message);
   }
 };
 
@@ -49,7 +53,7 @@ export const addProductToCart = async (idCart, idProduct) => {
     return {status: "success", payload: cart};
 
   } catch (error) {
-    throw new Error(error);
+    console.log("Error in addProductToCart cart.services.js: ", error.message);
   }
 };
 

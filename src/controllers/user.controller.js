@@ -12,7 +12,7 @@ export const login = async (req, res) => {
   const token = generateToken(payload);
 
   res.cookie("token", token, {
-    maxAge: 100000,
+    maxAge: 900000,
     httpOnly: true,
   });
 

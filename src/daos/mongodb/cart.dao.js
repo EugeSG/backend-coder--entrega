@@ -14,7 +14,7 @@ export default class CartDaoMondoDB {
         try {
             return await CartModel.find().populate("products.product"); 
         } catch (error) {
-            console.log(error);
+            console.log("Error in getCarts: ", error.message);
         }
     };
 
@@ -22,7 +22,7 @@ export default class CartDaoMondoDB {
         try {
             return await CartModel.create(obj);
         } catch (error) {
-            console.log(error);
+            console.log("Error in createCart: ", error.message);
         }
     }
 
@@ -30,7 +30,7 @@ export default class CartDaoMondoDB {
         try {
             return await CartModel.findById(idCart).populate("products.product");
         } catch (error) {
-            console.log(error);
+            console.log("Error in getCartById: ", error.message);
         }
     }
 
@@ -49,22 +49,16 @@ export default class CartDaoMondoDB {
           
           return product;
         } catch (error) {
-          throw new Error(error);
+          console.log("Error in existProdInCart: ", error.message);
         }
       }
     
     async addProductToCart(idCart, idProduct) {
         try {
             
-            let obj = {
-                product: idProduct,
-            };
-
             // Exist prod in cart?
             const existProdInCart = await this.existProdInCart(idCart, idProduct);
             let response;
-            
-            
 
             if(existProdInCart){
 
@@ -82,9 +76,8 @@ export default class CartDaoMondoDB {
               }
 
               return response;
-
         } catch (error) {
-            console.log("dao error ", error);
+            console.log("Error in addProductToCart: ", error.message);
         }
     }
 
@@ -97,7 +90,7 @@ export default class CartDaoMondoDB {
             { new: true }
           )
         } catch (error) {
-          console.log(error);
+          console.log("Error in deleteProdToCart: ", error.message);
         }
     }
 
@@ -110,7 +103,7 @@ export default class CartDaoMondoDB {
           return response;
 
         } catch (error) {
-          console.log(error);
+          console.log("Error in updateCart: ", error.message);
         }
       }
 
@@ -124,7 +117,7 @@ export default class CartDaoMondoDB {
 
           return cart;
         } catch (error) {
-          console.log(error);
+          console.log("Error in updateQuantity: ", error.message);
         }
       }
 
@@ -132,7 +125,7 @@ export default class CartDaoMondoDB {
         try {
           return await CartModel.findOneAndUpdate({_id: idCart}, {$set: {products: []}}, {new: true})
         } catch (error) {
-          console.log(error);
+          console.log("Error in clearCart: ", error.message);
         }
       }
 }
