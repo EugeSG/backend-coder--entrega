@@ -1,6 +1,7 @@
 import * as service from "../services/user.services.js";
 import { createHash } from "../utils/hashFunctions.js";
 import { generateToken } from "../utils/jwtFunctions.js";
+import { mailService } from "../services/mail.services.js";
 
 export const login = async (req, res) => {
   const payload = {
@@ -24,7 +25,7 @@ export const login = async (req, res) => {
 
 export const register = async (req, res) => {
   const { first_name, last_name, email, role, password } = req.body;
-
+  const name = first_name + " " + last_name;
   try {
     const hashPassword = await createHash(password);
     const user = await service.createUser({
@@ -35,7 +36,20 @@ export const register = async (req, res) => {
       password: hashPassword,
     });
 
-    res.status(201).json(user);
+    if(user.error){
+      res.status(400).json({
+        error: user.error,
+      });
+    } else if(!user){
+      res.status(500).json({
+        error: "Error al crear el usuario",
+      });
+    } else {
+      // Enviar mail de bienvenida
+      await mailService.sendEmail(email, "Bienvenido", name)
+
+      res.status(201).json(user);
+    }  
   } catch (error) {
     console.log("Error register " + error.message);
     res.status(500).json({

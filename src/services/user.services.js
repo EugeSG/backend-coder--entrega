@@ -38,8 +38,7 @@ export const createUser = async (product) => {
     
     if(productWithSameEmail) {
       return {
-        status: "error",
-        mssg: "The email already exists"
+        error: "The email already exists"
       }
     };
 
