@@ -30,7 +30,8 @@
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "socket.io": "^4.7.5",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "twilio": "^5.2.2"
   },
   "engines": {
     "node": "16.x"

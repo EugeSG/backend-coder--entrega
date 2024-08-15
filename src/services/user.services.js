@@ -30,21 +30,21 @@ export const getUserByEmail = async (emailUser) => {
   };
 };
 
-export const createUser = async (product) => {
+export const createUser = async (user) => {
   try {
-
-    // Check if the email already exists
-    let productWithSameEmail = await userDao.getUserByEmail(product.email);
     
-    if(productWithSameEmail) {
+    // Check if the email already exists
+    let userWithSameEmail = await userDao.getUserByEmail(user);
+    
+    if(userWithSameEmail) {
       return {
         error: "The email already exists"
       }
     };
 
-    let user =  await userDao.createUser(product);
-    if(!user) return false;
-    return user;
+    let userCreated =  await userDao.createUser(user);
+    if(!userCreated) return false;
+    return userCreated;
   } catch(error) {
       console.log("Error in createUser user.service.js " + error.message);
   }

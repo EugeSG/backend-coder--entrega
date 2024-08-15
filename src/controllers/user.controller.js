@@ -2,6 +2,7 @@ import * as service from "../services/user.services.js";
 import { createHash } from "../utils/hashFunctions.js";
 import { generateToken } from "../utils/jwtFunctions.js";
 import { mailService } from "../services/mail.services.js";
+import { smsService } from "../services/sms.service.js";
 
 export const login = async (req, res) => {
   const payload = {
@@ -24,7 +25,7 @@ export const login = async (req, res) => {
 };
 
 export const register = async (req, res) => {
-  const { first_name, last_name, email, role, password } = req.body;
+  const { first_name, last_name, email, phone, role, password } = req.body;
   const name = first_name + " " + last_name;
   try {
     const hashPassword = await createHash(password);
@@ -32,11 +33,12 @@ export const register = async (req, res) => {
       first_name,
       last_name,
       email,
+      phone,
       role,
       password: hashPassword,
     });
 
-    if(user.error){
+    if(user?.error){
       res.status(400).json({
         error: user.error,
       });
@@ -45,8 +47,15 @@ export const register = async (req, res) => {
         error: "Error al crear el usuario",
       });
     } else {
-      // Enviar mail de bienvenida
-      await mailService.sendEmail(email, "Bienvenido", name)
+      await mailService.sendEmail(email, "Bienvenido", name);
+
+      if(phone){
+        await smsService.sendSms(
+          phone,
+          "Bienvenido a nuestro eCommerce de CoderHouse"
+        );
+      }
+      
 
       res.status(201).json(user);
     }  

@@ -4,6 +4,7 @@ export const userDto = Joi.object({
   first_name: Joi.string().required(),
   last_name: Joi.string().required(),
   email: Joi.string().email().required(),
+  phone: Joi.string(),
   age: Joi.number(),
   password: Joi.string().required(),
   cartId: Joi.string(),
