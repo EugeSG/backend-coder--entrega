@@ -1,29 +1,19 @@
-import { generateUser } from "../utils/generateUser.js";
 import { MockUserModel } from "../daos/mongodb/models/mockUser.model.js";
+import { generateUser } from "../utils/generateMocks.js";
 
-export const createUsersMock = async (user, pets, count = 50) => {
+export const createUsersMock = async (userCount, petsCount, count = 50) => {
     try {
 
-      const amount = user ? user : count;
+      const amount = userCount ? userCount : count;
 
-      const usersArray = [];
-      for (let i = 0; i <= amount; i++) {
-
-        usersArray.push(
-          {
-            password: "coder123",
-            role: "admin",
-            pets: []
-          }
-        );
-        if(pets){
-          for (let i = 0; i <= pets; i++) {
-            usersArray.pets.push("newPet")
-          }
-        }
-        
+      let usersArray = [];
+      for (let i = 0; i < amount; i++) {
+        const user = petsCount ? await generateUser(petsCount) : await generateUser();
+        usersArray.push(user);
       }
-      return await MockUserModel.create(usersArray);
+      
+      return await MockUserModel.create(usersArray)
+
     } catch (error) {
       throw new Error(error);
     }

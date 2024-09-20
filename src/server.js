@@ -8,7 +8,7 @@ import productRouter from './routes/product.router.js';
 import viewsRouter from './routes/views.router.js';
 import sessionRouter from './routes/session.routes.js';
 import userRouter from './routes/user.router.js';
-import mocksRouter from 'routes/mocks.router.js';
+import mocksRouter from './routes/mocks.router.js';
 
 import { __dirname } from './utils/dirnameFunctions.js';
 import { initMongoDB } from "./daos/mongodb/connection.js";
@@ -37,7 +37,7 @@ app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
 app.use('/api/sessions', sessionRouter);
 app.use('/api/users', userRouter);
-app.use('api/mocks', mocksRouter)
+app.use('/api/mocks', mocksRouter)
 
 //Vistas productos y websockets
 app.use('/', viewsRouter);

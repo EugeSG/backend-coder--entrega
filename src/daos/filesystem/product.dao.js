@@ -16,7 +16,6 @@ export default class ProductDaoFS {
           products = JSON.parse(products)
           if(limit) {
             products = products.slice(0, limit);
-            console.log(products);
           }
         return products;
         }
@@ -68,11 +67,8 @@ export default class ProductDaoFS {
       // Update
       const productsFile = await this.getProducts("fileSystem");
       productExist = { ...productExist, ...obj };
-      console.log(productExist)
       const newArray = productsFile.filter((u) => u.id != id);
-      console.log(newArray);
       newArray.push(productExist); 
-      console.log(newArray);
       await fs.promises.writeFile(this.path, JSON.stringify(newArray));
       return {status: "success", payload: productExist};
 
@@ -83,7 +79,6 @@ export default class ProductDaoFS {
 
   async deleteProduct(id) {
     try {
-      console.log(id)
       //Validate Id
       const productExist = await this.getProductById(id);
       if(!productExist) return false;
@@ -91,7 +86,6 @@ export default class ProductDaoFS {
     const products = await this.getProducts("fileSystem");
     const newArray = products.filter((u) => u.id != id);
     await fs.promises.writeFile(this.path, JSON.stringify(newArray));
-    console.log(newArray);
     return productExist;
     } catch(error) {
       console.log(error)
