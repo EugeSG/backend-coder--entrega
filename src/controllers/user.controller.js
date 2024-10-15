@@ -50,19 +50,22 @@ export const register = async (req, res) => {
       await mailService.sendEmail(email, "Bienvenido", name);
 
       if(phone){
-        await smsService.sendSms(
-          phone,
-          "Bienvenido a nuestro eCommerce de CoderHouse"
-        );
+        try {
+          await smsService.sendSms(
+            phone,
+            "Bienvenido a nuestro eCommerce de CoderHouse"
+          );
+        } catch (error) {
+          console.log(error);
+        }
+        
       }
-      
-
       res.status(201).json(user);
     }  
   } catch (error) {
     console.log("Error register " + error.message);
     res.status(500).json({
-      error: "Error al crear el usuario",
+      error: error.message
     });
   }
 };

@@ -1,0 +1,106 @@
+components:
+  responses:
+    ResErrorValidation:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Validation Error message
+      example:    
+        error: \password\ is required
+    ResUnauthorized:
+        type: string
+        description: Unauthorized Error message
+        example: Unauthorized
+  schema:
+    Users:
+      ResLoginOk:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Login success message
+          token:
+            type: string
+            description: User's token
+        example:    
+          message: Login Success
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdF9uYW1lIjoiRXVnZSIsImxhc3RfbmFtZSI6Ikdv
+      ResRegisterOk: 
+        type: object
+        properties:
+          first_name:
+            type: string
+            description: User's first name
+          last_name:
+            type: string              
+            description: User's last name
+          email:
+            type: email 
+            description: User's email
+          password:
+            type: string
+            description: User's password
+          role:
+            type: string
+            description: User's role
+          _id:
+            type: string
+            description: User's id
+          __v:
+            type: number
+            description: User's version
+        example:
+          first_name: John
+          last_name: Perez
+          email: 0CjZz@example.com
+          password: 2342assadd
+          role: admin
+          _id: 62b5b4d0d7e8d1e7b9d1d1d1
+          __v: 0    
+      ResUserExistsError:
+        type: object 
+        properties:
+          error:
+            type: string
+            description: User already exists
+        example:
+          error: User already exists
+      ResServerError:
+        type: object
+        properties:
+          error:
+            type: string
+            description: Server Error message
+        example:
+          error: Server Error
+      ResCurrentOk:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Page authenticated message
+            example: Bienvenido
+          user:
+            type: object
+            properties:
+              first_name:
+                type: string
+                description: User's first name
+                example: John
+              last_name:
+                type: string
+                description: User's last name
+                example: Perez
+              email:
+                type: email
+                description: User's email
+                example: 0CjZz@example.com
+      ResLogoutOk:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Logout success message
+        example:
+          message: Logout Success

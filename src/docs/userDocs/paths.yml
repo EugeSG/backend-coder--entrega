@@ -1,0 +1,95 @@
+paths:
+  /api/sessions/login:
+    post:
+      tags:
+      - Users
+      summary: User Login.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/parameters/schemas/SchemaLogin'
+        required: true
+      responses:
+        200:
+          description: Login Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schema/Users/ResLoginOk'
+        400:
+          description: Body Validation Error. Some fields are missing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ResErrorValidation'
+        401:
+          description: Authentication Error. Email or password is wrong
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ResUnauthorized'                    
+  /api/sessions/register:
+    post:
+      tags:
+      - Users
+      summary: User Register.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/parameters/schemas/SchemaRegister'
+        required: true
+      responses:
+        201:
+          description: Register Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schema/Users/ResRegisterOk'
+        400:
+          description: Body Validation Error. Some fields are missing or invalid
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/responses/ResErrorValidation'
+                  - $ref: '#/components/schema/Users/ResUserExistsError'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schema/Users/ResServerError'
+  /api/sessions/current:
+    get:
+      tags:
+      - Users
+      summary: User Authenticated Page.
+      responses:
+        200:
+          description: Page Authenticated Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schema/Users/ResCurrentOk' 
+        401:
+          description: Authentication Error. User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ResUnauthorized'
+      security:
+        - BearerAuth: []
+  /api/sessions/logout:
+    get:
+      tags:
+      - Users
+      summary: User Logout.
+      responses:
+        200:
+          description: Logout Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schema/Users/ResLogoutOk'

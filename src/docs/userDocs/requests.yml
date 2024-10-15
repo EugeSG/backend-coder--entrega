@@ -1,0 +1,62 @@
+components:
+  parameters:
+    schemas:
+      SchemaLogin:
+        type: object
+        required:
+          - email
+          - password
+        properties:
+          email:
+            type: email
+            description: User's email
+            example: 0CjZz@example.com
+          password:
+            type: string
+            description: user's password   
+            example: 2342assadd
+      SchemaRegister:
+        type: object
+        required:
+          - first_name
+          - last_name
+          - email
+          - password
+        properties:
+          first_name:
+            type: string
+            description: User's first name
+            example: John
+          last_name:
+            type: string
+            description: User's last name
+            example: Perez
+          email:
+            type: email
+            description: User's email
+            example: 0CjZz@example.com
+          phone:
+            type: string
+            description: User's phone
+            example: 123456789
+          age:
+            type: number
+            description: User's age
+            example: 25
+          password:
+            type: string
+            description: user's password   
+            example: 2342assadd
+          cardId:
+            type: string
+            description: User's cardId
+            example: 123456789
+          role:
+            type: string
+            description: User's role
+            example: admin
+  securitySchemes:
+    BearerAuth: 
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
